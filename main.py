@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
 
-@st.cache
+@st.cache_data
 def load_data(data_path):
     data = pd.read_csv(data_path)
     data = data.drop('Unnamed: 0', axis=1)  # Assuming you want to drop this column as in your initial code
