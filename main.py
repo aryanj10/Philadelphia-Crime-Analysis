@@ -10,13 +10,13 @@ import numpy as np
 @st.cache_data
 def load_data(data_path):
     data = pd.read_csv(data_path)
-    data = data.drop('Unnamed: 0', axis=1)  # Assuming you want to drop this column as in your initial code
+    data['Datetime'] = pd.to_datetime(data['Datetime'])
     return data
 
-data_path=os.path.join('artifacts','data_full_features.csv')
+data_path=os.path.join('artifacts','final_data.csv')
 
 data=load_data(data_path)
-#print(data.head())
+
 
 dataExploration = st.container()
 
@@ -63,22 +63,7 @@ with plotContainer:
     st.markdown(f"*1. Theft is the most reported crime type : 404177*")
 
 
-def categorize_time(hour):
-    if 5 <= hour <= 7:
-        return "Early Morning"
-    elif 8 <= hour <= 11:
-        return "Morning"
-    elif 12 <= hour <= 15:
-        return "Afternoon"
-    elif 16 <= hour <= 19:
-        return "Evening"
-    elif 20 <= hour <= 23:
-        return "Late Evening"
-    else:
-        return "Night"
 
-# Apply the function to create a new column
-data['time_of_day'] = data['Hour'].apply(categorize_time)
 time_categories = {
     'Time of Day': ['Early Morning', 'Morning', 'Afternoon', 'Evening', 'Late Evening', 'Night'],
     'Hour Range': ['5 AM - 7 AM', '8 AM - 11 AM', '12 PM - 3 PM', '4 PM - 7 PM', '8 PM - 11 PM', '12 AM - 4 AM']
@@ -148,10 +133,6 @@ crime_severity_mapping = {
 
 crime_severity_df = pd.DataFrame(list(crime_severity_mapping.items()), columns=['Crime Type', 'Severity'])
 
-data['degree_of_crime'] = data['crime_type'].map(crime_severity_mapping)
-
-
-data['degree_of_crime'].value_counts()
 
 crime_degree_colors = {
     'Minor': '#ffbaba',
@@ -214,20 +195,8 @@ with plotContainer3:
     st.markdown(f'*3. Even though crimes reported in evening (Between 4 PM - 7 PM ) are the highest, 48% are minor crimes and 44% are moderate crimes*')
 
 
-timeseries=data.copy()
-# Assuming your data is loaded into a DataFrame named `df`
-# First, ensure that your date and time columns are integers
-timeseries['Year'] = timeseries['Year'].astype(int)
-timeseries['Month'] = timeseries['Month'].astype(int)
-timeseries['Day'] = timeseries['Day'].astype(int)
-timeseries['Hour'] = timeseries['Hour'].astype(int)
-timeseries['Minute'] = timeseries['Minute'].astype(int)
 
-# Create a new datetime column by combining Year, Month, Day, Hour, and Minute
-timeseries['Datetime'] = pd.to_datetime(timeseries[['Year', 'Month', 'Day', 'Hour', 'Minute']])
-timeseries=timeseries.drop(['Year','Month','Day','Hour','Minute'],axis=1)
-
-crime_count_per_day = timeseries.groupby(timeseries['Datetime'].dt.date).size()
+crime_count_per_day = data.groupby(data['Datetime'].dt.date).size()
 
 #crime_count_per_day.plot(color='#ff5252')
 
@@ -321,9 +290,9 @@ with plotContainer4:
     st.markdown(f'*3. The lowest number of reported crimes were reported on 23rd January 2016*')
 
 
-mean_temp_per_day = timeseries.groupby(timeseries['Datetime'].dt.date)['temperature_2m_mean (°F)'].mean()
+mean_temp_per_day = data.groupby(data['Datetime'].dt.date)['temperature_2m_mean (°F)'].mean()
 
-crime_count_per_day = timeseries.groupby(timeseries['Datetime'].dt.date).size()
+crime_count_per_day = data.groupby(data['Datetime'].dt.date).size()
 
 # Now, let's create a DataFrame for count_temp_per_day that includes both the mean temperature and crime count
 count_temp_per_day = mean_temp_per_day.to_frame(name='Mean Temperature (°F)')
@@ -369,8 +338,8 @@ with plotContainer5:
     st.markdown('**Insights**')
     st.markdown(f'*1. There is a slight positive correlation between temperature and crime reports*')
 
-mean_rain_per_day = timeseries.groupby(timeseries['Datetime'].dt.date)['precipitation_sum (mm)'].mean()
-crime_count_per_day = timeseries.groupby(timeseries['Datetime'].dt.date).size()
+mean_rain_per_day = data.groupby(data['Datetime'].dt.date)['precipitation_sum (mm)'].mean()
+crime_count_per_day = data.groupby(data['Datetime'].dt.date).size()
 
 # Now, let's create a DataFrame for count_temp_per_day that includes both the mean temperature and crime count
 count_rain_per_day = mean_rain_per_day.to_frame(name='precipitation_sum (mm)')
