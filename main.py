@@ -55,7 +55,7 @@ with plotContainer:
 
     st.pyplot(plt)
     st.markdown('**Insights**')
-    st.markdown(f'*1. Theft is the most reported crime type : {data['crime_type'].value_counts()[1]}*')
+    st.markdown(f"*1. Theft is the most reported crime type : {data['crime_type'].value_counts()[1]}*")
 
 
 def categorize_time(hour):
@@ -411,6 +411,9 @@ with plotContainer6:
     st.markdown(f'*1. There is a slight negative correlation between precipitation and crime reports*')
 
 
+plotContainer7 = st.container()
+with plotContainer7:
+    st.header('Thank You!')
 #map_con = st.container()
 
 #drop_cols = ['id', 'location', 'date', 'severity', 'borough', 'age', 'class', 'mode', 'ageBand', 'vehicles']
