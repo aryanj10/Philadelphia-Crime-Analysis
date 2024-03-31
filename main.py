@@ -7,10 +7,15 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
 
+@st.cache
+def load_data(data_path):
+    data = pd.read_csv(data_path)
+    data = data.drop('Unnamed: 0', axis=1)  # Assuming you want to drop this column as in your initial code
+    return data
+
 data_path=os.path.join('artifacts','data_full_features.csv')
 
-data=pd.read_csv(data_path)
-data=data.drop('Unnamed: 0',axis=1)
+data=load_data(data_path)
 #print(data.head())
 
 dataExploration = st.container()
