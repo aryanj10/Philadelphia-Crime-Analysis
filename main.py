@@ -55,7 +55,7 @@ with plotContainer:
 
     st.pyplot(plt)
     st.markdown('**Insights**')
-    st.markdown(f"*1. Theft is the most reported crime type : {data['crime_type'].value_counts()[1]}*")
+    st.markdown(f"*1. Theft is the most reported crime type : 404177*")
 
 
 def categorize_time(hour):
